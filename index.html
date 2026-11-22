@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#08080a">
+  <title>Mehdi Fardouss - Full-Stack Web Developer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://images.unsplash.com">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Onest:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #08080a;
+      --fg: #f3f1ea;
+      --accent: #ff3b1d;
+      --accent-secondary: #ff6a3d;
+      --muted: #807f78;
+      --surface: #111114;
+      --ease-cinematic: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      background: var(--bg);
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: "Onest", sans-serif;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .hero {
+      position: relative;
+      min-height: 100svh;
+      height: 100svh;
+      overflow: hidden;
+      isolation: isolate;
+      background:
+        radial-gradient(circle at 50% 64%, rgba(255, 59, 29, 0.035), transparent 24rem),
+        var(--bg);
+    }
+
+    .nav {
+      position: fixed;
+      z-index: 20;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 6.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 3.25rem;
+      mix-blend-mode: normal;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      font-family: "Onest", sans-serif;
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .monogram {
+      width: 2.75rem;
+      height: 2.75rem;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(243, 241, 234, 0.42);
+      border-radius: 50%;
+      font-family: "Anton", sans-serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.04em;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: clamp(1.25rem, 2.3vw, 2.75rem);
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .nav-links a {
+      position: relative;
+      color: rgba(243, 241, 234, 0.64);
+      transition: color 300ms ease;
+    }
+
+    .nav-links a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -0.45rem;
+      width: 100%;
+      height: 1px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: right;
+      transition: transform 420ms var(--ease-cinematic);
+    }
+
+    .nav-links a:hover,
+    .nav-links a:focus-visible {
+      color: var(--fg);
+    }
+
+    .nav-links a:hover::after,
+    .nav-links a:focus-visible::after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+
+    .hero-name {
+      position: absolute;
+      z-index: 1;
+      left: 50%;
+      bottom: 1.5%;
+      width: 100%;
+      transform: translateX(-50%);
+      text-align: center;
+      font-family: "Anton", sans-serif;
+      font-size: clamp(13rem, 20.2vw, 28rem);
+      font-weight: 400;
+      line-height: 0.78;
+      letter-spacing: -0.01em;
+      color: var(--accent);
+      text-transform: uppercase;
+      pointer-events: none;
+    }
+
+    .name-line {
+      display: block;
+      height: 0.78em;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .name-letter {
+      display: inline-block;
+      transform: translateY(100%);
+      opacity: 0;
+      will-change: transform, opacity;
+    }
+
+    .name-line.is-visible .name-letter {
+      animation: letterIn 900ms var(--ease-cinematic) forwards;
+      animation-delay: calc(var(--line-delay) + var(--letter-index) * 52ms);
+    }
+
+    @keyframes letterIn {
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .portrait-wrap {
+      position: absolute;
+      z-index: 3;
+      left: 50%;
+      bottom: -1px;
+      width: 36vw;
+      height: 86vh;
+      height: 86svh;
+      transform: translateX(-50%);
+      pointer-events: auto;
+    }
+
+    .portrait-wrap::after {
+      content: "";
+      position: absolute;
+      z-index: 5;
+      left: -12%;
+      right: -12%;
+      bottom: -1px;
+      height: 18%;
+      background: linear-gradient(to bottom, transparent 0%, rgba(8, 8, 10, 0.48) 46%, var(--bg) 100%);
+      pointer-events: none;
+    }
+
+    .portrait {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      object-position: center bottom;
+      filter: url("#liquid");
+      transform: scale(1);
+      transition: transform 520ms var(--ease-cinematic);
+      mask-image: linear-gradient(to bottom, #000 0%, #000 72%, rgba(0, 0, 0, 0.92) 82%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 72%, rgba(0, 0, 0, 0.92) 82%, transparent 100%);
+    }
+
+    .portrait-wrap:hover .portrait {
+      transform: scale(1.018);
+    }
+
+    .introduction {
+      position: absolute;
+      z-index: 6;
+      top: clamp(8.75rem, 22vh, 14rem);
+      left: 3.25rem;
+      right: 3.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      pointer-events: none;
+    }
+
+    .roles {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      font-family: "Anton", sans-serif;
+      font-size: clamp(1.75rem, 3.2vw, 3.25rem);
+      line-height: 1.05;
+      text-transform: uppercase;
+    }
+
+    .roles li,
+    .intro-copy {
+      opacity: 0;
+    }
+
+    .roles li {
+      height: 1.05em;
+      overflow: hidden;
+    }
+
+    .roles li span {
+      display: block;
+      transform: translateY(110%);
+    }
+
+    .roles li.is-visible span {
+      animation: roleIn 760ms var(--ease-cinematic) forwards;
+      animation-delay: calc(var(--role-index) * 80ms);
+    }
+
+    @keyframes roleIn {
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .intro-copy {
+      width: min(26rem, 31vw);
+      margin: 0.35rem 0 0;
+      color: var(--muted);
+      font-size: 1.0625rem;
+      line-height: 1.65;
+      text-align: right;
+      transform: translateY(1.25rem);
+    }
+
+    .intro-copy.is-visible {
+      animation: copyIn 900ms var(--ease-cinematic) 500ms forwards;
+    }
+
+    @keyframes copyIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .scroll-cue {
+      position: absolute;
+      z-index: 7;
+      left: 3.25rem;
+      bottom: 2.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.19em;
+      text-transform: uppercase;
+      opacity: 0;
+    }
+
+    .scroll-cue.is-visible {
+      animation: copyIn 700ms var(--ease-cinematic) 1.15s forwards;
+    }
+
+    .scroll-cue::before {
+      content: "";
+      width: 1px;
+      height: 2.75rem;
+      background: var(--accent);
+    }
+
+    .marquee {
+      width: 100%;
+      overflow: hidden;
+      border-top: 1px solid rgba(243, 241, 234, 0.1);
+      border-bottom: 1px solid rgba(243, 241, 234, 0.1);
+      background: var(--bg);
+      padding: 2rem 0;
+    }
+
+    .marquee-track {
+      display: flex;
+      width: max-content;
+      animation: marquee 22s linear infinite;
+      will-change: transform;
+    }
+
+    .marquee-set {
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    .marquee-item {
+      display: flex;
+      align-items: center;
+      font-family: "Anton", sans-serif;
+      font-size: 3.25rem;
+      line-height: 1;
+      letter-spacing: -0.01em;
+      color: var(--fg);
+      text-transform: uppercase;
+    }
+
+    .marquee-dot {
+      width: 0.625rem;
+      height: 0.625rem;
+      flex: 0 0 0.625rem;
+      margin: 0 2rem;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    @media (max-width: 1024px) {
+      .portrait-wrap {
+        width: 48vw;
+      }
+
+      .hero-name {
+        font-size: clamp(11rem, 21vw, 20rem);
+      }
+
+      .roles {
+        font-size: 3.25rem;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .nav {
+        height: 5.25rem;
+        padding: 0 1.25rem;
+      }
+
+      .brand {
+        gap: 0.55rem;
+        font-size: 0.56rem;
+      }
+
+      .monogram {
+        width: 2.35rem;
+        height: 2.35rem;
+        font-size: 0.62rem;
+      }
+
+      .nav-links {
+        gap: 0.9rem;
+        font-size: 0.56rem;
+      }
+
+      .nav-links a:nth-child(2),
+      .nav-links a:nth-child(3) {
+        display: none;
+      }
+
+      .introduction {
+        top: 7.5rem;
+        left: 1.25rem;
+        right: 1.25rem;
+      }
+
+      .roles {
+        font-size: 1.75rem;
+      }
+
+      .intro-copy {
+        width: 10.75rem;
+        margin-top: 0;
+        font-size: 0.78rem;
+        line-height: 1.5;
+      }
+
+      .portrait-wrap {
+        width: 80vw;
+        height: 68vh;
+        height: 68svh;
+      }
+
+      .hero-name {
+        bottom: 4.5%;
+        font-size: clamp(7.2rem, 29vw, 10.5rem);
+      }
+
+      .scroll-cue {
+        left: 1.25rem;
+        bottom: 1.25rem;
+      }
+
+      .marquee-item {
+        font-size: 2.25rem;
+      }
+
+      .marquee-dot {
+        margin: 0 1.25rem;
+      }
+    }
+
+    @media (max-height: 700px) and (min-width: 701px) {
+      .introduction {
+        top: 7.5rem;
+      }
+
+      .portrait-wrap {
+        height: 82svh;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      .name-line .name-letter,
+      .roles li span,
+      .intro-copy,
+      .scroll-cue {
+        animation: none !important;
+        opacity: 1;
+        transform: none;
+      }
+
+      .marquee-track {
+        animation: none;
+      }
+
+      .portrait-wrap {
+        pointer-events: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <svg width="0" height="0" aria-hidden="true" style="position:absolute">
+    <filter id="liquid" x="-12%" y="-12%" width="124%" height="124%">
+      <feTurbulence type="turbulence" baseFrequency="0.008 0.018" numOctaves="1" seed="7" result="noise"/>
+      <feDisplacementMap id="liquid-map" in="SourceGraphic" in2="noise" scale="1" xChannelSelector="R" yChannelSelector="B"/>
+    </filter>
+  </svg>
+
+  <section class="hero" id="home" aria-label="Presentation">
+    <nav class="nav" aria-label="Primary navigation">
+      <a class="brand" href="#home" aria-label="Mehdi Fardouss home">
+        <span class="monogram">MF</span>
+        <span>Mehdi Fardouss</span>
+      </a>
+      <div class="nav-links">
+        <a href="#projects">Projects</a>
+        <a href="#about">About</a>
+        <a href="#skills">Skills</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </nav>
+
+    <div class="hero-name" aria-label="Mehdi Fardouss">
+      <span class="name-line" data-text="MEHDI" style="--line-delay: 0ms"></span>
+      <span class="name-line" data-text="FARDOUSS" style="--line-delay: 240ms"></span>
+    </div>
+
+    <div class="introduction">
+      <ul class="roles" aria-label="Professional roles">
+        <li style="--role-index: 0"><span>FULL-STACK</span></li>
+        <li style="--role-index: 1"><span>WEB DEVELOPER</span></li>
+        <li style="--role-index: 2"><span>FREELANCER</span></li>
+        <li style="--role-index: 3"><span>CREATOR</span></li>
+      </ul>
+      <p class="intro-copy">
+        "I build modern web experiences, combining frontend creativity and backend logic to transform ideas into functional digital products."
+      </p>
+    </div>
+
+    <div class="portrait-wrap" aria-hidden="true">
+      <img
+        class="portrait"
+        src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&amp;fit=crop&amp;w=1000&amp;q=88"
+        alt=""
+        loading="eager"
+        fetchpriority="high"
+      >
+    </div>
+
+    <div class="scroll-cue">Scroll to explore</div>
+  </section>
+
+  <section class="marquee" aria-label="Creative statements">
+    <div class="marquee-track">
+      <div class="marquee-set">
+        <span class="marquee-item">BUILD WITH PURPOSE</span><span class="marquee-dot"></span>
+        <span class="marquee-item">CREATE DIGITAL EXPERIENCES</span><span class="marquee-dot"></span>
+        <span class="marquee-item">THINK BEYOND LIMITS</span><span class="marquee-dot"></span>
+        <span class="marquee-item">DESIGN. DEVELOP. DEPLOY.</span><span class="marquee-dot"></span>
+        <span class="marquee-item">TURN IDEAS INTO REALITY</span><span class="marquee-dot"></span>
+      </div>
+      <div class="marquee-set" aria-hidden="true">
+        <span class="marquee-item">BUILD WITH PURPOSE</span><span class="marquee-dot"></span>
+        <span class="marquee-item">CREATE DIGITAL EXPERIENCES</span><span class="marquee-dot"></span>
+        <span class="marquee-item">THINK BEYOND LIMITS</span><span class="marquee-dot"></span>
+        <span class="marquee-item">DESIGN. DEVELOP. DEPLOY.</span><span class="marquee-dot"></span>
+        <span class="marquee-item">TURN IDEAS INTO REALITY</span><span class="marquee-dot"></span>
+      </div>
+    </div>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+  <script>
+    document.querySelectorAll(".name-line").forEach((line) => {
+      [...line.dataset.text].forEach((letter, index) => {
+        const span = document.createElement("span");
+        span.className = "name-letter";
+        span.style.setProperty("--letter-index", index);
+        span.textContent = letter;
+        line.appendChild(span);
+      });
+    });
+
+    requestAnimationFrame(() => {
+      document.querySelectorAll(".name-line").forEach((line) => line.classList.add("is-visible"));
+      document.querySelectorAll(".roles li").forEach((item) => item.classList.add("is-visible"));
+      document.querySelector(".intro-copy").classList.add("is-visible");
+      document.querySelector(".scroll-cue").classList.add("is-visible");
+    });
+
+    const supportsTouch = window.matchMedia("(hover: none), (pointer: coarse)").matches;
+    const displacement = document.querySelector("#liquid-map");
+    const portrait = document.querySelector(".portrait-wrap");
+
+    if (!supportsTouch && displacement) {
+      let animationFrame = 0;
+
+      function animateDisplacement(from, to) {
+        cancelAnimationFrame(animationFrame);
+        const start = performance.now();
+        const duration = 520;
+
+        function update(now) {
+          const progress = Math.min((now - start) / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          displacement.setAttribute("scale", (from + (to - from) * eased).toFixed(2));
+          if (progress < 1) animationFrame = requestAnimationFrame(update);
+        }
+
+        animationFrame = requestAnimationFrame(update);
+      }
+
+      portrait.addEventListener("mouseenter", () => animateDisplacement(1, 30));
+      portrait.addEventListener("mouseleave", () => animateDisplacement(30, 1));
+    }
+
+    if (window.Lenis) {
+      const lenis = new Lenis({
+        duration: 1.12,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        smoothWheel: true
+      });
+
+      function raf(time) {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+      }
+      requestAnimationFrame(raf);
+    }
+  </script>
+</body>
+</html>
